@@ -3,6 +3,7 @@
 # By Amktiao Date: 2024-02-28
 
 mversion="20240526"
+model_name=$(getprop ro.product.name)
 get_data_dev=$(getprop dev.mnt.dev.data)
 get_f2fs_sysfs="/sys/fs/f2fs/$get_data_dev"
 
@@ -23,10 +24,15 @@ function check_run_context()
 function amktiao_main()
 {
     echo "[-] F2FS 触发 紧急GC 回收小工具"
-    echo "[-] 版本: $mversion"
+    echo "[-] 版本: $mversion 机型: $model_name"
 
     check_run_context
-    start_run_idlemaint
+    case $model_name in
+        "munch"* | "pipa")
+            start_run_urgent_gc;;
+        *)
+            start_run_idlemaint;;
+    esac
 }
 
 function show_volume_info()
