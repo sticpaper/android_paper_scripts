@@ -28,5 +28,13 @@ function amktiao_main()
     check_run_context
 }
 
+function show_volume_info()
+{
+    target_free_segs=$(cat $get_f2fs_sysfs/free_segments)
+    target_dirty_segs=$(cat $get_f2fs_sysfs/dirty_segments)
+    echo "[-] [$get_data_dev] 目前脏段: $target_dirty_segs"
+    echo "[-] [$get_data_dev] 目前空闲段: $target_free_segs"
+}
+
 # Software main
 amktiao_main
