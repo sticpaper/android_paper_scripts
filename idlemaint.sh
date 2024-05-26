@@ -3,11 +3,29 @@
 # By Amktiao Date: 2024-02-28
 
 mversion="20240526"
+get_data_dev=$(getprop dev.mnt.dev.data)
+get_f2fs_sysfs="/sys/fs/f2fs/$get_data_dev"
+
+function check_run_context()
+{
+    PATH="/system/bin:$PATH"; export PATH
+    if [ `whoami` != "root" ]; then
+        echo "[!] 未使用Root模式运行, 已自动退出"
+        echo "[#] 在运行前勾上Root再重试"; exit 0
+    fi
+
+    if [ ! -d "$get_f2fs_sysfs" ]; then
+        echo "[!] 您的设备不是 F2FS 文件系统"
+        echo "[#] 空闲维护仅支持 F2FS 环境"; exit 0
+    fi
+}
 
 function amktiao_main()
 {
     echo "[-] F2FS 触发 紧急GC 回收小工具"
     echo "[-] 版本: $mversion"
+
+    check_run_context
 }
 
 # Software main
